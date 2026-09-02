@@ -1,0 +1,8 @@
+{
+	// 測試專用：不含任何 remote binding（BROWSER）與 R2 設定，
+	// bindings 一律由測試注入 mock，因此 CI 無需 Cloudflare 憑證。
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "render-sight-test",
+	"main": "src/index.js",
+	"compatibility_date": "2026-08-31"
+}
