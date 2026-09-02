@@ -609,7 +609,7 @@ async function authenticateAccessRequest(request, env) {
 
 function createServer(env, { origin, subject, protocolVersion }) {
 	const server = new McpServer({
-		name: 'hello-server',
+		name: 'render-sight',
 		version: '1.0.0',
 	});
 	const includeResourceLink = supportsResourceLinks(protocolVersion);
