@@ -1,5 +1,6 @@
 import { McpServer, ProtocolError, ProtocolErrorCode, ResourceNotFoundError, ResourceTemplate } from '@modelcontextprotocol/server';
 import { z } from 'zod';
+import pkg from '../package.json';
 import {
 	DEFAULT_RENDER_WAIT_TIMEOUT_MS,
 	MAX_INLINE_IMAGE_BYTES,
@@ -99,8 +100,8 @@ function createStoredRenderResult({ output, storedRender, filename, viewport, im
 
 export function createServer(env, { origin, subject, protocolVersion }) {
 	const server = new McpServer({
-		name: 'render-sight',
-		version: '0.1.0',
+		name: pkg.name,
+		version: pkg.version,
 	});
 	const includeResourceLink = supportsResourceLinks(protocolVersion);
 	const renderResourceTemplate = new ResourceTemplate(`${origin}${RENDER_PATH_PREFIX}{renderId}.png`, {
