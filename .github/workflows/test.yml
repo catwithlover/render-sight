@@ -6,8 +6,12 @@ on:
     paths:
       - src/**
       - test/**
+      - site/**
       - vitest.config.mjs
+      - wrangler.jsonc
       - wrangler.test.jsonc
+      - .prettierrc
+      - .prettierignore
       - package.json
       - package-lock.json
       - .github/workflows/test.yml
@@ -15,8 +19,12 @@ on:
     paths:
       - src/**
       - test/**
+      - site/**
       - vitest.config.mjs
+      - wrangler.jsonc
       - wrangler.test.jsonc
+      - .prettierrc
+      - .prettierignore
       - package.json
       - package-lock.json
       - .github/workflows/test.yml
@@ -34,4 +42,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run format:check
       - run: npm test -- --run
+      - run: npx wrangler deploy --dry-run

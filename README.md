@@ -36,27 +36,27 @@ ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
 
 參數：
 
-| 參數 | 說明 |
-| --- | --- |
-| `html` | 必填，要渲染的 HTML。 |
-| `width`、`height` | viewport 尺寸，預設為 `800x800`，各自限制在 `1` 到 `4096` pixels。 |
-| `omitBackground` | 是否使用透明背景，預設為 `false`。 |
-| `waitForFonts` | 截圖前等待 `document.fonts.ready` 與兩次 repaint，預設為 `true`。 |
+| 參數              | 說明                                                                                                                                   |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `html`            | 必填，要渲染的 HTML。                                                                                                                  |
+| `width`、`height` | viewport 尺寸，預設為 `800x800`，各自限制在 `1` 到 `4096` pixels。                                                                     |
+| `omitBackground`  | 是否使用透明背景，預設為 `false`。                                                                                                     |
+| `waitForFonts`    | 截圖前等待 `document.fonts.ready` 與兩次 repaint，預設為 `true`。                                                                      |
 | `waitForSelector` | 可選的 readiness 條件，包含 CSS `selector`、`attached \| visible \| hidden` state，以及最長 30 秒的 selector/font readiness 時間預算。 |
-| `waitForTimeout` | readiness 完成後的額外固定等待，範圍為 `0` 到 `10000` ms，預設為 `0`。 |
-| `output` | `inline`、`url` 或 `both`，預設為 `both`。 |
-| `filename` | 下載時顯示的檔名；未提供 `.png` 時會自動補上。 |
+| `waitForTimeout`  | readiness 完成後的額外固定等待，範圍為 `0` 到 `10000` ms，預設為 `0`。                                                                 |
+| `output`          | `inline`、`url` 或 `both`，預設為 `both`。                                                                                             |
+| `filename`        | 下載時顯示的檔名；未提供 `.png` 時會自動補上。                                                                                         |
 
 服務會在 supplied HTML 的 doctype 後、其餘 document markup 與 CSP meta 前注入內部 readiness marker script；接著依序等待指定 selector、webfont、額外 delay 與兩次 animation frame 後才截圖。等待條件逾時時會回傳 tool error，不會以未完成的畫面繼續。以 loading overlay 為例：
 
 ```json
 {
-  "waitForSelector": {
-    "selector": "#loading-overlay",
-    "state": "hidden",
-    "timeout": 15000
-  },
-  "waitForTimeout": 200
+	"waitForSelector": {
+		"selector": "#loading-overlay",
+		"state": "hidden",
+		"timeout": 15000
+	},
+	"waitForTimeout": 200
 }
 ```
 
@@ -64,11 +64,11 @@ ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
 
 輸出模式：
 
-| 模式 | 行為 |
-| --- | --- |
-| `inline` | 回傳 MCP image content，不寫入 R2。 |
-| `url` | 將 Browser Run response body 直接串流至 R2，只回傳文字 presigned URL 與 resource metadata。 |
-| `both` | 同時回傳 MCP image content 與暫存 presigned URL。未超過 inline 上限時，R2 寫入或簽署失敗會降級為 `inline`；圖片超過 inline 上限且 R2 寫入成功時則降級為 `url`。 |
+| 模式     | 行為                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inline` | 回傳 MCP image content，不寫入 R2。                                                                                                                             |
+| `url`    | 將 Browser Run response body 直接串流至 R2，只回傳文字 presigned URL 與 resource metadata。                                                                     |
+| `both`   | 同時回傳 MCP image content 與暫存 presigned URL。未超過 inline 上限時，R2 寫入或簽署失敗會降級為 `inline`；圖片超過 inline 上限且 R2 寫入成功時則降級為 `url`。 |
 
 所有成功結果都會提供 `output`、`filename`、`mimeType`、`width`、`height` 與 `byteLength` structured metadata。已儲存的結果另有 `renderId`、`downloadUrl` 與 `expiresAt`。
 

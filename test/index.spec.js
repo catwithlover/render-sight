@@ -25,11 +25,7 @@ let validAccessJwt;
 let fetchSpy;
 let consoleLogSpy;
 
-async function createAccessJwt({
-	audience = TEST_AUDIENCE,
-	issuer = TEST_TEAM_DOMAIN,
-	subject = 'employee-id',
-} = {}) {
+async function createAccessJwt({ audience = TEST_AUDIENCE, issuer = TEST_TEAM_DOMAIN, subject = 'employee-id' } = {}) {
 	const jwt = new SignJWT({ email: 'employee@example.com' })
 		.setProtectedHeader({ alg: 'RS256', kid: TEST_KEY_ID })
 		.setIssuer(issuer)
@@ -138,13 +134,7 @@ afterEach(() => {
 	consoleLogSpy.mockRestore();
 });
 
-async function sendMcpRequest(
-	method,
-	params,
-	env = {},
-	accessJwt = validAccessJwt,
-	protocolVersion = '2025-06-18',
-) {
+async function sendMcpRequest(method, params, env = {}, accessJwt = validAccessJwt, protocolVersion = '2025-06-18') {
 	const headers = {
 		host: 'localhost',
 		accept: 'application/json, text/event-stream',
@@ -204,11 +194,7 @@ async function sendHttpRequest(url, env = {}, accessJwt = validAccessJwt, init =
 describe('Cloudflare Access authentication', () => {
 	it('fails closed when authentication is not configured', async () => {
 		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-		const { body, response } = await sendMcpRequest(
-			'tools/list',
-			{},
-			{ POLICY_AUD: undefined, TEAM_DOMAIN: undefined },
-		);
+		const { body, response } = await sendMcpRequest('tools/list', {}, { POLICY_AUD: undefined, TEAM_DOMAIN: undefined });
 
 		expect(response.status).toBe(500);
 		expect(body).toBe('Authentication is not configured.');
@@ -412,14 +398,10 @@ describe('render tool', () => {
 
 		const screenshotOptions = quickAction.mock.calls[0][1];
 		expect(screenshotOptions.waitForSelector).toMatchObject({ timeout: 8250 });
-		expect(screenshotOptions.waitForSelector.selector).toMatch(
-			/^html\[data-mcp-render-ready="[0-9a-f-]{36}"\]$/,
-		);
+		expect(screenshotOptions.waitForSelector.selector).toMatch(/^html\[data-mcp-render-ready="[0-9a-f-]{36}"\]$/);
 		expect(screenshotOptions).not.toHaveProperty('waitForTimeout');
 		expect(screenshotOptions.actionTimeout).toBe(13250);
-		expect(screenshotOptions.html).toContain(
-			'"selector":"#loading-overlay","state":"hidden","waitForFonts":true,"waitForTimeout":250',
-		);
+		expect(screenshotOptions.html).toContain('"selector":"#loading-overlay","state":"hidden","waitForFonts":true,"waitForTimeout":250');
 	});
 
 	it('injects its readiness script after the doctype and before an HTML CSP meta tag', async () => {
@@ -510,9 +492,7 @@ describe('render tool', () => {
 			height: 800,
 			byteLength: 3,
 		});
-		expect(structured.renderId).toMatch(
-			/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
-		);
+		expect(structured.renderId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
 		const downloadUrl = new URL(structured.downloadUrl);
 		expect(downloadUrl.origin).toBe(`https://${TEST_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`);
 		expect(downloadUrl.pathname).toBe(`/${TEST_R2_BUCKET_NAME}/renders/${structured.renderId}.png`);
@@ -703,12 +683,7 @@ describe('render tool', () => {
 	});
 
 	it('fails promptly when a chunked large image cannot be stored', async () => {
-		const chunks = [
-			new Uint8Array(4 * 1024 * 1024),
-			new Uint8Array(4 * 1024 * 1024),
-			new Uint8Array(1),
-			new Uint8Array(1),
-		];
+		const chunks = [new Uint8Array(4 * 1024 * 1024), new Uint8Array(4 * 1024 * 1024), new Uint8Array(1), new Uint8Array(1)];
 		const quickAction = vi.fn().mockImplementation(
 			() =>
 				new Response(
@@ -737,9 +712,7 @@ describe('render tool', () => {
 		);
 
 		expect(message.result.isError).toBe(true);
-		expect(message.result.content[0].text).toContain(
-			'The image is too large to return inline, and its download URL could not be created.',
-		);
+		expect(message.result.content[0].text).toContain('The image is too large to return inline, and its download URL could not be created.');
 		expect(bucket.put.mock.calls[0][1]).toBeInstanceOf(ReadableStream);
 		consoleWarn.mockRestore();
 	});
@@ -815,11 +788,7 @@ describe('stored render access', () => {
 	it('does not expose an image to another Access subject', async () => {
 		const { authenticatedUrl, bucket } = await createStoredRender();
 		const otherUserJwt = await createAccessJwt({ subject: 'other-employee' });
-		const response = await sendHttpRequest(
-			authenticatedUrl,
-			{ BUCKET_SCREENSHOT: bucket },
-			otherUserJwt,
-		);
+		const response = await sendHttpRequest(authenticatedUrl, { BUCKET_SCREENSHOT: bucket }, otherUserJwt);
 
 		expect(response.status).toBe(404);
 		expect(await response.text()).toBe('Not Found');
@@ -838,11 +807,7 @@ describe('stored render access', () => {
 
 	it('reads the authenticated resource through MCP resources/read', async () => {
 		const { authenticatedUrl, bucket } = await createStoredRender();
-		const { message } = await sendMcpRequest(
-			'resources/read',
-			{ uri: authenticatedUrl },
-			{ BUCKET_SCREENSHOT: bucket },
-		);
+		const { message } = await sendMcpRequest('resources/read', { uri: authenticatedUrl }, { BUCKET_SCREENSHOT: bucket });
 
 		expect(message.result.contents).toEqual([
 			{
@@ -857,11 +822,7 @@ describe('stored render access', () => {
 		const { authenticatedUrl, bucket, structured } = await createStoredRender();
 		const key = `renders/${structured.renderId}.png`;
 		bucket.objects.get(key).bytes = new Uint8Array(MAX_INLINE_IMAGE_BYTES + 1);
-		const { message } = await sendMcpRequest(
-			'resources/read',
-			{ uri: authenticatedUrl },
-			{ BUCKET_SCREENSHOT: bucket },
-		);
+		const { message } = await sendMcpRequest('resources/read', { uri: authenticatedUrl }, { BUCKET_SCREENSHOT: bucket });
 
 		expect(message.error.code).toBe(-32602);
 		expect(message.error.message).toContain('exceeds the 8 MiB MCP resource limit');
