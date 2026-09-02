@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "mcp-browser-screenshot-service",
+	"name": "render-sight",
 	"main": "src/index.js",
 	"compatibility_date": "2026-08-31",
 	"observability": {
@@ -18,18 +18,18 @@
 	"r2_buckets": [
 		{
 			"binding": "BUCKET_SCREENSHOT", 
-			"bucket_name": "mcp-browser-screenshot-service"
+			"bucket_name": "render-sight"
 		}
 	],
 	"vars": {
 		"TEAM_DOMAIN": "https://<team-name>.cloudflareaccess.com",
 		"POLICY_AUD": "",
-		"R2_BUCKET_NAME": "mcp-browser-screenshot-service"
+		"R2_BUCKET_NAME": "render-sight"
 	},
 	"workers_dev": false,
 	"routes": [
 		{
-			"pattern": "mcp-browser-screenshot-service.example.com",
+			"pattern": "render-sight.example.com",
 			"custom_domain": true
 		}
 	]
