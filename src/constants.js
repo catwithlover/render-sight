@@ -1,0 +1,14 @@
+export const MAX_VIEWPORT_DIMENSION = 4096;
+export const PNG_MIME_TYPE = 'image/png';
+export const RENDER_TTL_SECONDS = 24 * 60 * 60;
+export const RENDER_TTL_MS = RENDER_TTL_SECONDS * 1000;
+export const MAX_INLINE_IMAGE_BYTES = 8 * 1024 * 1024;
+export const DEFAULT_RENDER_WAIT_TIMEOUT_MS = 15_000;
+export const MAX_RENDER_WAIT_TIMEOUT_MS = 30_000;
+export const MAX_RENDER_SETTLE_TIME_MS = 10_000;
+export const RENDER_REPAINT_TIMEOUT_BUFFER_MS = 1_000;
+export const RENDER_ACTION_TIMEOUT_BUFFER_MS = 5_000;
+export const RENDER_PATH_PREFIX = '/renders/';
+export const RESOURCE_LINK_MIN_PROTOCOL_VERSION = '2025-06-18';
+export const RENDER_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+export const RENDER_PATH_PATTERN = /^\/renders\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.png$/;
