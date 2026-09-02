@@ -16,6 +16,8 @@
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0",
     "agents": "^0.22.0",
+    "aws4fetch": "^1.0.20",
+    "jose": "^6.2.10",
     "zod": "^4.5.4"
   }
 }
