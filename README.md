@@ -6,6 +6,8 @@
 
 **RenderSight** 是一個部署在 Cloudflare Workers 上的無狀態 MCP server，讓 ChatGPT 能夠呈現、檢視並截圖 agent 在自己執行環境中製作、編修的網頁成果。
 
+> 專案介紹網站：[https://catwithlover.github.io/cloudflare-browser-rendering-mcp/](https://catwithlover.github.io/cloudflare-browser-rendering-mcp/)（[English](https://catwithlover.github.io/cloudflare-browser-rendering-mcp/en/)，原始檔在 [`site/`](site/)）
+
 ## 為什麼需要這個服務
 
 ChatGPT 的 chat 與 work 環境內建雲端瀏覽器，但該瀏覽器運行在與 agent 隔離的環境中：agent 在自己的執行環境裡產出或修改 HTML、CSS、JavaScript 之後，無法把這些成果交給那個瀏覽器載入，因此無法呈現、檢視或截圖自己做出來的網頁——agent 看不見自己的成果，只能盲改。
