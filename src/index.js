@@ -85,7 +85,7 @@ function concatenateChunks(chunks, byteLength) {
 
 async function readInlineImage(body) {
 	if (!body) {
-		throw new Error('Browser Rendering returned an empty image response.');
+		throw new Error('Browser Run returned an empty image response.');
 	}
 
 	const reader = body.getReader();
@@ -156,7 +156,7 @@ function continueStream(bufferedChunks, reader) {
 
 async function prepareBothImage(body) {
 	if (!body) {
-		throw new Error('Browser Rendering returned an empty image response.');
+		throw new Error('Browser Run returned an empty image response.');
 	}
 
 	const reader = body.getReader();
@@ -668,7 +668,7 @@ function createServer(env, { origin, subject, protocolVersion }) {
 				html: z
 					.string()
 					.describe(
-						'Complete HTML document or fragment to render. External stylesheets, images, and fonts must be accessible from Cloudflare Browser Rendering.',
+						'Complete HTML document or fragment to render. External stylesheets, images, and fonts must be accessible from Cloudflare Browser Run.',
 					),
 				width: viewportDimensionSchema
 					.optional()
@@ -772,7 +772,7 @@ function createServer(env, { origin, subject, protocolVersion }) {
 					};
 				}
 				if (!response.body) {
-					throw new Error('Browser Rendering returned an empty response.');
+					throw new Error('Browser Run returned an empty response.');
 				}
 
 				if (output === 'url') {

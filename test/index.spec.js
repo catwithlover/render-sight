@@ -324,7 +324,7 @@ describe('render tool', () => {
 		});
 	});
 
-	it('rejects oversized dimensions without invoking Browser Rendering', async () => {
+	it('rejects oversized dimensions without invoking Browser Run', async () => {
 		const quickAction = vi.fn();
 		const { message } = await sendMcpRequest(
 			'tools/call',

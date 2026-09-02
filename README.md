@@ -11,7 +11,7 @@
 
 ChatGPT 的 chat 與 work 環境內建雲端瀏覽器，但該瀏覽器運行在與 agent 隔離的環境中：agent 在自己的執行環境裡產出或修改 HTML、CSS、JavaScript 之後，無法把這些成果交給那個瀏覽器載入，因此無法呈現、檢視或截圖自己做出來的網頁——agent 看不見自己的成果，只能盲改。
 
-本服務透過 MCP 補上這塊缺口：agent 將網頁內容交給 `render` tool，由 Cloudflare Browser Rendering 在雲端渲染並回傳 PNG 截圖。agent 從此能「看見」自己寫出來的頁面並據以迭代，例如：
+本服務透過 MCP 補上這塊缺口：agent 將網頁內容交給 `render` tool，由 Cloudflare Browser Run（原名 Browser Rendering）在雲端渲染並回傳 PNG 截圖。agent 從此能「看見」自己寫出來的頁面並據以迭代，例如：
 
 - 視覺化檢查產生的 landing page、電子郵件樣板或報告版面。
 - 以「截圖 → 檢視 → 修正 → 再截圖」的循環迭代 UI。
@@ -21,7 +21,7 @@ ChatGPT 的 chat 與 work 環境內建雲端瀏覽器，但該瀏覽器運行在
 
 ```text
 ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
-                              ├─▶ Browser Rendering：渲染 HTML，等內容與 webfont 就緒後截圖
+                              ├─▶ Browser Run：渲染 HTML，等內容與 webfont 就緒後截圖
                               └─▶ R2：暫存 PNG，回傳 24 小時效期的 presigned 下載 URL
 ```
 
@@ -67,7 +67,7 @@ ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
 | 模式 | 行為 |
 | --- | --- |
 | `inline` | 回傳 MCP image content，不寫入 R2。 |
-| `url` | 將 Browser Rendering response body 直接串流至 R2，只回傳文字 presigned URL 與 resource metadata。 |
+| `url` | 將 Browser Run response body 直接串流至 R2，只回傳文字 presigned URL 與 resource metadata。 |
 | `both` | 同時回傳 MCP image content 與暫存 presigned URL。未超過 inline 上限時，R2 寫入或簽署失敗會降級為 `inline`；圖片超過 inline 上限且 R2 寫入成功時則降級為 `url`。 |
 
 所有成功結果都會提供 `output`、`filename`、`mimeType`、`width`、`height` 與 `byteLength` structured metadata。已儲存的結果另有 `renderId`、`downloadUrl` 與 `expiresAt`。
@@ -84,7 +84,7 @@ R2 暫存下載設定、Cloudflare Access 與 Managed OAuth 設定，以及在 C
 
 ## Development
 
-需求：Node.js 22+、已啟用 Browser Rendering 的 Cloudflare 帳號，以及完成登入的 Wrangler CLI。
+需求：Node.js 22+、已啟用 Browser Run 的 Cloudflare 帳號，以及完成登入的 Wrangler CLI。
 
 ```bash
 npm install
