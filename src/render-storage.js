@@ -1,9 +1,18 @@
 import { AwsClient } from 'aws4fetch';
 import { PNG_MIME_TYPE, RENDER_TTL_MS, RENDER_TTL_SECONDS } from './constants.js';
 
+const NON_ASCII_PATTERN = /[^\x20-\x7e]/;
+
+function encodeRfc5987Value(value) {
+	return encodeURIComponent(value).replace(/['()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
+}
+
 export function getContentDisposition(filename) {
 	const asciiFilename = filename.replace(/[^\x20-\x7e]/g, '_');
-	return `inline; filename="${asciiFilename}"`;
+	if (!NON_ASCII_PATTERN.test(filename)) {
+		return `inline; filename="${asciiFilename}"`;
+	}
+	return `inline; filename="${asciiFilename}"; filename*=UTF-8''${encodeRfc5987Value(filename)}`;
 }
 
 function getRenderObjectKey(renderId) {

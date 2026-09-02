@@ -746,14 +746,14 @@ describe('render tool', () => {
 });
 
 describe('stored render access', () => {
-	async function createStoredRender() {
+	async function createStoredRender(filename = 'result.png') {
 		const bucket = createR2Bucket();
 		const quickAction = vi.fn().mockImplementation(createPngResponse);
 		const { message } = await sendMcpRequest(
 			'tools/call',
 			{
 				name: 'render',
-				arguments: { html: '<p>test</p>', filename: 'result.png' },
+				arguments: { html: '<p>test</p>', filename },
 			},
 			{ BROWSER: { quickAction }, BUCKET_SCREENSHOT: bucket, ...TEST_R2_SIGNING_ENV },
 		);
@@ -777,6 +777,39 @@ describe('stored render access', () => {
 		expect(response.headers.get('cache-control')).toBe('private, no-store');
 		expect(response.headers.get('x-content-type-options')).toBe('nosniff');
 		expect(new Uint8Array(await response.arrayBuffer())).toEqual(PNG_BYTES);
+	});
+
+	it.each([
+		{
+			filename: '本寶寶.png',
+			expected: `inline; filename="___.png"; filename*=UTF-8''%E6%9C%AC%E5%AF%B6%E5%AF%B6.png`,
+		},
+		{
+			filename: 'レンダー.png',
+			expected: `inline; filename="____.png"; filename*=UTF-8''%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC.png`,
+		},
+		{
+			filename: '圖片 🎨.png',
+			expected: `inline; filename="__ __.png"; filename*=UTF-8''%E5%9C%96%E7%89%87%20%F0%9F%8E%A8.png`,
+		},
+		{
+			filename: "it's (1)*.png",
+			expected: `inline; filename="it's (1)*.png"`,
+		},
+	])('preserves a unicode filename ($filename) via RFC 5987 without breaking Headers', async ({ filename, expected }) => {
+		const { authenticatedUrl, bucket, structured } = await createStoredRender(filename);
+
+		expect(structured.filename).toBe(filename);
+
+		const [[, , putOptions]] = bucket.put.mock.calls;
+		expect(putOptions.customMetadata.filename).toBe(filename);
+		const storedDisposition = putOptions.httpMetadata.contentDisposition;
+		expect(storedDisposition).toBe(expected);
+		expect([...storedDisposition].every((char) => char.charCodeAt(0) <= 255)).toBe(true);
+
+		const response = await sendHttpRequest(authenticatedUrl, { BUCKET_SCREENSHOT: bucket });
+		expect(response.status).toBe(200);
+		expect(response.headers.get('content-disposition')).toBe(storedDisposition);
 	});
 
 	it('does not expose an image to another Access subject', async () => {
