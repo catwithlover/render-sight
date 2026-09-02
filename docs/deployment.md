@@ -48,6 +48,13 @@ ChatGPT 無法解析 Managed OAuth 發出的 opaque token。Cloudflare Access �
 - `TEAM_DOMAIN`：Cloudflare One team domain，例如 `https://<team-name>.cloudflareaccess.com`。
 - `POLICY_AUD`：保護此 MCP server 的 Access Application Audience (AUD) tag。
 
+`wrangler.jsonc` 中的僅為 placeholder。部署時以同名 secret 覆寫（secret 優先於 vars），真實值不需寫入版本控制：
+
+```bash
+npx wrangler secret put TEAM_DOMAIN
+npx wrangler secret put POLICY_AUD
+```
+
 缺少設定、缺少 assertion 或 JWT 驗證失敗時，請求不會進入 MCP handler。只有 render tool 回傳的 R2 presigned URL 可在其 24 小時效期內不經 OAuth 直接讀取對應圖片。
 
 ### 1. Protect the Worker with Access
@@ -56,7 +63,7 @@ ChatGPT 無法解析 Managed OAuth 發出的 opaque token。Cloudflare Access �
 2. 開啟 **Access**，選擇保護此 Worker。
 3. 將目的地設為 Worker `render-sight`，類型選擇 Worker 的 production 與 preview URLs。
 4. 加入只允許公司成員登入的 Access Allow Policy。
-5. 確認 **Domains & Routes** 包含 `render-sight.example.com`。
+5. 確認 **Domains & Routes** 包含自訂網域，例如 `render-sight.example.com`。
 
 Worker destination 會自動保護該 Worker 的 Custom Domains、routes、`workers.dev` hostname 與 previews，不需要再建立獨立的 hostname-based Access Application。
 
