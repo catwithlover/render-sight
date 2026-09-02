@@ -1,8 +1,10 @@
-# RenderSight
+<div align="center">
+  <img src="docs/assets/repo-logo.png" alt="RenderSight" width="180" />
+  <h1>RenderSight</h1>
+  <p><em>讓 ChatGPT 看見它自己做出的網頁——部署在 Cloudflare Workers 上的 MCP 網頁截圖服務</em></p>
+</div>
 
-![render-sight logo](docs/assets/repo-logo.png)
-
-**RenderSight**是一個部署在 Cloudflare Workers 上的無狀態 MCP server，讓 ChatGPT 能夠呈現、檢視並截圖 agent 在自己執行環境中製作、編修的網頁成果。
+**RenderSight** 是一個部署在 Cloudflare Workers 上的無狀態 MCP server，讓 ChatGPT 能夠呈現、檢視並截圖 agent 在自己執行環境中製作、編修的網頁成果。
 
 ## 為什麼需要這個服務
 
