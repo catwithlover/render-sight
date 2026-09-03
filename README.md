@@ -1,53 +1,54 @@
 <div align="center">
-  <img src="docs/assets/repo-logo.png" alt="RenderSight" width="180" />
+  <img src="docs/assets/repo-logo.svg" alt="RenderSight" width="180" />
   <h1>RenderSight</h1>
-  <p><em>讓 ChatGPT 看見它自己做出的網頁——部署在 Cloudflare Workers 上的 MCP 網頁截圖服務</em></p>
+  <p><em>Let ChatGPT see the web pages it builds — an MCP screenshot service deployed on Cloudflare Workers</em></p>
   <p><a href="https://catwithlover.github.io/render-sight/"><strong>Website</strong></a></p>
+  <p>English · <a href="README.zh-Hant.md" lang="zh-Hant">繁體中文</a></p>
 </div>
 
-**RenderSight** 是一個部署在 Cloudflare Workers 上的無狀態 MCP server，讓 ChatGPT 能夠呈現、檢視並截圖 agent 在自己執行環境中製作、編修的網頁成果。
+**RenderSight** is a stateless MCP server deployed on Cloudflare Workers that lets ChatGPT present, inspect, and screenshot the web pages its agent creates and edits inside its own execution environment.
 
-## 為什麼需要這個服務
+## Why this service exists
 
-ChatGPT 的 chat 與 work 環境內建雲端瀏覽器，但該瀏覽器運行在與 agent 隔離的環境中：agent 在自己的執行環境裡產出或修改 HTML、CSS、JavaScript 之後，無法把這些成果交給那個瀏覽器載入，因此無法呈現、檢視或截圖自己做出來的網頁——agent 看不見自己的成果，只能盲改。
+ChatGPT's chat and work environments ship with a built-in cloud browser, but that browser runs in an environment isolated from the agent: after the agent produces or modifies HTML, CSS, and JavaScript in its own execution environment, it has no way to hand those results to that browser to load, so it can't present, inspect, or screenshot the pages it built — the agent can't see its own work and can only edit blind.
 
-本服務透過 MCP 補上這塊缺口：agent 將網頁內容交給 `render` tool，由 Cloudflare Browser Run（原名 Browser Rendering）在雲端渲染並回傳 PNG 截圖。agent 從此能「看見」自己寫出來的頁面並據以迭代，例如：
+This service fills that gap over MCP: the agent hands page content to the `render` tool, and Cloudflare Browser Run (formerly Browser Rendering) renders it in the cloud and returns a PNG screenshot. From then on, the agent can "see" the pages it writes and iterate on them, for example:
 
-- 視覺化檢查產生的 landing page、電子郵件樣板或報告版面。
-- 以「截圖 → 檢視 → 修正 → 再截圖」的循環迭代 UI。
-- 把渲染結果包裝成暫存連結分享出去。
+- Visually inspect generated landing pages, email templates, or report layouts.
+- Iterate on UI with a screenshot → inspect → fix → screenshot loop.
+- Wrap rendering results into temporary links for sharing.
 
-## 運作方式
+## How it works
 
 ```text
-ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
-                              ├─▶ Browser Run：渲染 HTML，等內容與 webfont 就緒後截圖
-                              └─▶ R2：暫存 PNG，回傳 24 小時效期的 presigned 下載 URL
+ChatGPT ──Managed OAuth──▶ MCP server (Cloudflare Workers)
+                              ├─▶ Browser Run: renders HTML, waits for content and webfonts to be ready, captures a screenshot
+                              └─▶ R2: stages the PNG, returns a presigned download URL valid for 24 hours
 ```
 
-- Worker 由 Cloudflare Access Managed OAuth 保護，只有通過 Access Policy 的使用者能連線。
-- 截圖能以 MCP image content 內嵌回傳、存入 R2 並回傳暫存下載 URL，或兩者同時回傳。
+- The Worker is protected by Cloudflare Access Managed OAuth; only users passing the Access Policy can connect.
+- Screenshots can be returned inline as MCP image content, stored in R2 with a temporary download URL, or both at once.
 
 ## Tools
 
 ### render
 
-將 HTML 渲染為 PNG 圖片，並以内嵌圖片、暫存下載 URL 或兩者回傳。
+Renders HTML to a PNG image, returned as an inline image, a temporary download URL, or both.
 
-參數：
+Parameters:
 
-| 參數              | 說明                                                                                                                                   |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `html`            | 必填，要渲染的 HTML。                                                                                                                  |
-| `width`、`height` | viewport 尺寸，預設為 `800x800`，各自限制在 `1` 到 `4096` pixels。                                                                     |
-| `omitBackground`  | 是否使用透明背景，預設為 `false`。                                                                                                     |
-| `waitForFonts`    | 截圖前等待 `document.fonts.ready` 與兩次 repaint，預設為 `true`。                                                                      |
-| `waitForSelector` | 可選的 readiness 條件，包含 CSS `selector`、`attached \| visible \| hidden` state，以及最長 30 秒的 selector/font readiness 時間預算。 |
-| `waitForTimeout`  | readiness 完成後的額外固定等待，範圍為 `0` 到 `10000` ms，預設為 `0`。                                                                 |
-| `output`          | `inline`、`url` 或 `both`，預設為 `both`。                                                                                             |
-| `filename`        | 下載時顯示的檔名；未提供 `.png` 時會自動補上。                                                                                         |
+| Parameter         | Description                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `html`            | Required. The HTML to render.                                                                                                  |
+| `width`, `height` | Viewport size, default `800x800`, each clamped to `1`–`4096` pixels.                                                           |
+| `omitBackground`  | Whether to use a transparent background, default `false`.                                                                      |
+| `waitForFonts`    | Waits for `document.fonts.ready` and two repaints before capture, default `true`.                                              |
+| `waitForSelector` | Optional readiness condition: a CSS `selector`, an `attached \| visible \| hidden` state, and a 30-second readiness time budget. |
+| `waitForTimeout`  | Extra fixed wait after readiness completes, `0`–`10000` ms, default `0`.                                                       |
+| `output`          | `inline`, `url`, or `both`, default `both`.                                                                                    |
+| `filename`        | Filename shown on download; `.png` is appended automatically if missing.                                                       |
 
-服務會在 supplied HTML 的 doctype 後、其餘 document markup 與 CSP meta 前注入內部 readiness marker script；接著依序等待指定 selector、webfont、額外 delay 與兩次 animation frame 後才截圖。等待條件逾時時會回傳 tool error，不會以未完成的畫面繼續。以 loading overlay 為例：
+The service injects an internal readiness marker script into the supplied HTML — right after the doctype, before the rest of the document markup and any CSP meta. It then waits, in order, for the specified selector, webfonts, an extra delay, and two animation frames before capturing. When a wait condition times out, a tool error is returned instead of continuing with an unfinished page. Example with a loading overlay:
 
 ```json
 {
@@ -60,40 +61,40 @@ ChatGPT ──Managed OAuth──▶ MCP server（Cloudflare Workers）
 }
 ```
 
-等待只能消除載入競態；若 font URL 發生 CORS、權限或網路錯誤，仍需改用可公開存取的 self-hosted font，或將 WOFF2 直接嵌入 HTML。
+Waiting only removes loading races. If a font URL fails due to CORS, permission, or network errors, switch to a publicly accessible self-hosted font, or embed the WOFF2 directly into the HTML.
 
-輸出模式：
+Output modes:
 
-| 模式     | 行為                                                                                                                                                            |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `inline` | 回傳 MCP image content，不寫入 R2。                                                                                                                             |
-| `url`    | 將 Browser Run response body 直接串流至 R2，只回傳文字 presigned URL 與 resource metadata。                                                                     |
-| `both`   | 同時回傳 MCP image content 與暫存 presigned URL。未超過 inline 上限時，R2 寫入或簽署失敗會降級為 `inline`；圖片超過 inline 上限且 R2 寫入成功時則降級為 `url`。 |
+| Mode     | Behavior                                                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inline` | Returns MCP image content; nothing is written to R2.                                                                                                           |
+| `url`    | Streams the Browser Run response body straight to R2 and returns only a text presigned URL and resource metadata.                                              |
+| `both`   | Returns both MCP image content and a temporary presigned URL. When under the inline cap, R2 write or signing failures degrade to `inline`; when the image exceeds the inline cap and the R2 write succeeds, it degrades to `url`. |
 
-所有成功結果都會提供 `output`、`filename`、`mimeType`、`width`、`height` 與 `byteLength` structured metadata。已儲存的結果另有 `renderId`、`downloadUrl` 與 `expiresAt`。
+Every successful result carries `output`, `filename`, `mimeType`, `width`, `height`, and `byteLength` structured metadata. Stored results additionally include `renderId`, `downloadUrl`, and `expiresAt`.
 
-為避免超過 Workers 的 128 MB isolate memory limit，`inline` 與 `resources/read` 最多編碼 8 MiB。純 `inline` 圖片超過上限時會回傳 tool error；`both` 在 R2 寫入成功時會保留下載 URL 並改回 `output: "url"`，若 R2 同時無法寫入則回傳 tool error。
+To stay under the Workers 128 MB isolate memory limit, `inline` and `resources/read` encode at most 8 MiB. Pure `inline` images over the cap return a tool error; `both` keeps the download URL and switches back to `output: "url"` when the R2 write succeeds, and returns a tool error if R2 cannot be written either.
 
-暫存 URL 是僅允許讀取單一 object、有效 24 小時的 R2 S3 presigned URL。它直接使用 `<ACCOUNT_ID>.r2.cloudflarestorage.com`，所以 agent 讀取圖片時不需再通過 Cloudflare Access 或 OAuth。MCP `2025-06-18` 以上會同時收到 `resource_link` content；較舊版本仍可從 text content 與 structured metadata 取得 URL。
+The temporary URL is an R2 S3 presigned URL that only allows reading a single object and is valid for 24 hours. It hits `<ACCOUNT_ID>.r2.cloudflarestorage.com` directly, so the agent doesn't need to go through Cloudflare Access or OAuth again when reading the image. MCP `2025-06-18` and above also receive `resource_link` content; older versions can still get the URL from the text content and structured metadata.
 
-Presigned URL 是 bearer token，任何取得完整 URL 的人都能在到期前重複讀取該圖片，因此不可寫入 log 或分享給非預期接收者。R2 presigned URL 不支援 custom domain。
+Presigned URLs are bearer tokens: anyone holding the full URL can read the image repeatedly until it expires, so never write it into logs or share it with unintended recipients. R2 presigned URLs do not support custom domains.
 
-## 部署與設定
+## Deployment & configuration
 
-R2 暫存下載設定、Cloudflare Access 與 Managed OAuth 設定，以及在 ChatGPT 建立 connector 的步驟，請參考 [docs/deployment.md](docs/deployment.md)。
+For R2 temporary download configuration, Cloudflare Access and Managed OAuth setup, and the steps to create a connector in ChatGPT, see [docs/deployment.md](docs/deployment.md).
 
 ## Development
 
-需求：Node.js 22+、已啟用 Browser Run 的 Cloudflare 帳號，以及完成登入的 Wrangler CLI。
+Requirements: Node.js 22+, a Cloudflare account with Browser Run enabled, and a logged-in Wrangler CLI.
 
 ```bash
 npm install
 npm run dev
 ```
 
-本機 MCP endpoint 為 `http://localhost:8787/mcp`。
+The local MCP endpoint is `http://localhost:8787/mcp`.
 
-本機直接呼叫不會經過 Cloudflare Access，因此缺少 assertion 時會回傳 `403`。測試會使用臨時 RSA key pair 簽發 JWT 並 mock JWKS endpoint，不需要連線至 Cloudflare。
+Direct local calls don't go through Cloudflare Access, so they return `403` when the assertion is missing. Tests sign JWTs with a temporary RSA key pair and mock the JWKS endpoint; no Cloudflare connection is needed.
 
 ```bash
 npm test -- --run
