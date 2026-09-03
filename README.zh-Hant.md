@@ -81,7 +81,7 @@ Presigned URL 是 bearer token，任何取得完整 URL 的人都能在到期前
 
 ## 部署與設定
 
-R2 暫存下載設定、Cloudflare Access 與 Managed OAuth 設定，以及在 ChatGPT 建立 connector 的步驟，請參考 [docs/deployment.md](docs/deployment.md)。
+R2 暫存下載設定、Cloudflare Access 與 Managed OAuth 設定，以及在 ChatGPT 建立 connector 的步驟，請參考 [docs/deployment.zh-Hant.md](docs/deployment.zh-Hant.md)。
 
 ## Development
 
