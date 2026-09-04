@@ -3,224 +3,325 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>RenderSight — Let agents see the web pages they build</title>
+		<title>RenderSight — Give your agent a clear view of the page</title>
 		<meta
 			name="description"
-			content="RenderSight is a stateless MCP screenshot service on Cloudflare Workers that lets ChatGPT present, inspect, and screenshot the web pages its agent builds and edits."
+			content="RenderSight is a stateless MCP screenshot service on Cloudflare Workers that lets an agent render, inspect, and iterate on the pages it builds."
 		/>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
 		<link rel="stylesheet" href="site.css" />
 		<link rel="icon" href="assets/repo-logo.svg" type="image/svg+xml" />
 	</head>
 	<body>
 		<header class="site-header">
-			<div class="container">
-				<a class="brand" href="./">
-					<img src="assets/repo-logo.svg" alt="RenderSight" />
-					RenderSight
+			<div class="container header-inner">
+				<a class="brand" href="./" aria-label="RenderSight home">
+					<img src="assets/repo-logo.svg" alt="" />
+					<span>RenderSight</span>
 				</a>
-				<nav>
-					<a class="nav-link" href="https://github.com/catwithlover/render-sight">GitHub</a>
-					<a class="nav-link" href="zh-Hant/" lang="zh-Hant">繁體中文</a>
+				<nav class="site-nav" aria-label="Primary navigation">
+					<a class="nav-link" href="#how-it-works">How it works</a>
+					<a class="nav-link" href="#render-tool"><code>render</code></a>
+					<a class="nav-link nav-link-github" href="https://github.com/catwithlover/render-sight">GitHub</a>
+					<a class="nav-link language-link" href="zh-Hant/" lang="zh-Hant">繁體中文</a>
 				</nav>
 			</div>
 		</header>
 
 		<main>
-			<section class="hero">
-				<div class="container">
-					<p class="hero-kicker">MCP server · Cloudflare Workers</p>
-					<h1>Let agents <span class="dim">see</span> the pages they build</h1>
-					<p>
-						RenderSight is a stateless MCP server on Cloudflare Workers that lets ChatGPT present, inspect, and screenshot the web pages its
-						agent creates and edits inside its own execution environment.
-					</p>
-					<div class="cta-row">
-						<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight">View source</a>
-						<a class="btn btn-secondary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.md"
-							>Deployment guide</a
-						>
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="container hero-grid">
+					<div class="hero-copy">
+						<p class="eyebrow">
+							<span class="signal-dot" aria-hidden="true"></span>
+							<span>MCP screenshot service</span>
+							<span class="eyebrow-divider" aria-hidden="true">/</span>
+							<span>Cloudflare Workers</span>
+						</p>
+						<h1 id="hero-title">Give your agent a clear view <span>of the page.</span></h1>
+						<p class="hero-lede">
+							RenderSight turns generated HTML into a screenshot your agent can inspect, compare, and improve. No more editing a page it
+							cannot see.
+						</p>
+						<div class="cta-row">
+							<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.md">
+								Read the deployment guide <span aria-hidden="true">-&gt;</span>
+							</a>
+							<a class="btn btn-secondary" href="https://github.com/catwithlover/render-sight">View source</a>
+						</div>
+						<div class="hero-facts" aria-label="Service highlights">
+							<span class="hero-fact"><strong>HTML in</strong><span>one tool call</span></span>
+							<span class="hero-fact"><strong>PNG out</strong><span>inline or URL</span></span>
+							<span class="hero-fact"><strong>24 hours</strong><span>temporary sharing</span></span>
+						</div>
+					</div>
+
+					<div class="render-stage" aria-hidden="true">
+						<div class="stage-topline">
+							<span class="stage-label">the render loop</span>
+							<span class="stage-state"><span class="signal-dot signal-dot-small"></span> ready</span>
+						</div>
+						<div class="render-stack">
+							<div class="artifact artifact-code">
+								<div class="artifact-topline">
+									<span>draft.html</span>
+									<span class="artifact-kind">HTML</span>
+								</div>
+								<div class="code-lines">
+									<span class="code-line code-line-short"></span>
+									<span class="code-line code-line-blue"></span>
+									<span class="code-line code-line-wide"></span>
+									<span class="code-line code-line-medium"></span>
+									<span class="code-line code-line-blue code-line-small"></span>
+									<span class="code-line code-line-wide"></span>
+									<span class="code-line code-line-short"></span>
+									<span class="code-line code-line-medium"></span>
+								</div>
+								<span class="artifact-foot">page content</span>
+							</div>
+
+							<div class="render-bridge">
+								<span>render</span>
+								<span class="bridge-line"></span>
+							</div>
+
+							<div class="artifact artifact-screen">
+								<div class="browser-bar">
+									<span class="browser-dots"><i></i><i></i><i></i></span>
+									<span class="browser-address">preview / final</span>
+								</div>
+								<div class="screen-content">
+									<div class="screen-mark"><img src="assets/repo-logo.svg" alt="" /></div>
+									<span class="screen-eyebrow">Rendered view</span>
+									<h2>See the whole picture.</h2>
+									<p>Review the details before the next edit.</p>
+									<span class="screen-button">Inspect result</span>
+								</div>
+								<div class="screen-footline">
+									<span><span class="check-mark">+</span> fonts ready</span><span>PNG</span>
+								</div>
+							</div>
+						</div>
+						<div class="stage-footline">
+							<span><span class="signal-dot signal-dot-small"></span> ready to inspect</span>
+							<span>800 x 800 / 128 KB</span>
+						</div>
 					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-why" id="why" aria-labelledby="why-title">
 				<div class="container">
-					<p class="chapter-heading">Why it exists</p>
-					<h2>Agents can't see their own work — so they edit blind</h2>
-					<p class="lede">
-						ChatGPT's built-in cloud browser runs in an environment isolated from the agent, so HTML, CSS, and JavaScript produced by the
-						agent can never be loaded into it. RenderSight closes that gap over MCP.
-					</p>
-					<ul class="problem-list">
+					<div class="section-heading-row">
+						<div>
+							<p class="section-index">01 / The gap</p>
+							<h2 id="why-title">Agents can write a page. They just can't see it.</h2>
+						</div>
+						<p class="section-lede">
+							ChatGPT's built-in cloud browser runs in an environment isolated from the agent. RenderSight closes that gap over MCP, so
+							visual feedback becomes part of the work.
+						</p>
+					</div>
+
+					<ul class="reason-list">
 						<li>
-							<strong>Isolated environments</strong>
-							<p>
-								After the agent produces or edits a page, the built-in browser cannot load it, so the result can't be presented, inspected,
-								or screenshotted.
-							</p>
+							<span class="reason-number">01</span>
+							<div>
+								<h3>Close the isolation gap</h3>
+								<p>HTML, CSS, and JavaScript created in the agent's environment can finally be loaded, presented, and inspected.</p>
+							</div>
 						</li>
 						<li>
-							<strong>Cloud rendering</strong>
-							<p>
-								The agent hands page content to the <code>render</code> tool; Cloudflare Browser Run renders it in the cloud and returns a
-								PNG screenshot.
-							</p>
+							<span class="reason-number">02</span>
+							<div>
+								<h3>Render where the page lives</h3>
+								<p>Cloudflare Browser Run renders the content in the cloud, waits for webfonts, and captures a PNG when it is ready.</p>
+							</div>
 						</li>
 						<li>
-							<strong>See and iterate</strong>
-							<p>
-								Iterate on UI with a screenshot → inspect → fix → screenshot loop, visually checking landing pages, email templates, or
-								report layouts.
-							</p>
+							<span class="reason-number">03</span>
+							<div>
+								<h3>Keep the loop moving</h3>
+								<p>Screenshot, inspect, fix, screenshot again. Give landing pages, email templates, and reports a visual quality check.</p>
+							</div>
 						</li>
 						<li>
-							<strong>Temporary sharing</strong>
-							<p>Results can be stored in R2 and shared as temporary download links valid for 24 hours.</p>
+							<span class="reason-number">04</span>
+							<div>
+								<h3>Share without keeping it forever</h3>
+								<p>Store results in R2 and pass along a temporary download link that stays valid for 24 hours.</p>
+							</div>
 						</li>
 					</ul>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-blueprint" id="how-it-works" aria-labelledby="flow-title">
 				<div class="container">
-					<p class="chapter-heading">How it works</p>
-					<h2>From HTML to screenshot in one tool call</h2>
-					<p class="lede">
-						The Worker is protected by Cloudflare Access Managed OAuth; only users passing the Access Policy can connect. Screenshots return
-						as inline MCP image content, as a temporary R2 download URL, or both.
-					</p>
-					<div class="flow">
-						<div class="flow-step flow-main">
-							<span class="step-no">1</span>
-							<h3>MCP server (Cloudflare Workers)</h3>
-							<p>ChatGPT connects via Managed OAuth and calls the <code>render</code> tool with HTML.</p>
+					<div class="section-heading-row">
+						<div>
+							<p class="section-index">02 / How it works</p>
+							<h2 id="flow-title">A render loop the agent can actually use.</h2>
 						</div>
-						<div class="flow-step">
-							<span class="step-no">2</span>
-							<h3>Browser Run</h3>
-							<p>The page is rendered in the cloud; once content and webfonts are ready, a PNG is captured.</p>
-						</div>
-						<div class="flow-step">
-							<span class="step-no">3</span>
-							<h3>R2 staging</h3>
-							<p>The PNG is stored in R2 and a presigned download URL valid for 24 hours is returned.</p>
-						</div>
-						<div class="flow-step">
-							<span class="step-no">4</span>
-							<h3>The agent reviews</h3>
-							<p>The agent reads the screenshot via image content or download URL and iterates on the fix.</p>
-						</div>
+						<p class="section-lede">
+							The Worker is protected by Cloudflare Access Managed OAuth. A successful call returns image content, a temporary URL, or both.
+						</p>
+					</div>
+
+					<ol class="flow-list">
+						<li class="flow-step flow-step-start">
+							<span class="flow-number">01</span>
+							<h3>Send the draft</h3>
+							<p>ChatGPT connects to the MCP server through Managed OAuth and calls <code>render</code> with HTML.</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">02</span>
+							<h3>Run the browser</h3>
+							<p>Browser Run renders the page in the cloud, waits for content and webfonts, then captures a PNG.</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">03</span>
+							<h3>Stage the result</h3>
+							<p>R2 stores the PNG and returns a presigned download URL valid for 24 hours when a URL is requested.</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">04</span>
+							<h3>Review and iterate</h3>
+							<p>The agent reads the image content or URL, then turns what it sees into the next useful edit.</p>
+						</li>
+					</ol>
+
+					<div class="flow-callout">
+						<span class="callout-label">A typical call</span>
+						<code><span>render</span>({ html, output: <b>"both"</b> })</code>
+						<span class="callout-result">screenshot + metadata</span>
 					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-tool" id="render-tool" aria-labelledby="tool-title">
 				<div class="container">
-					<p class="chapter-heading">Tools</p>
-					<h2>render</h2>
-					<p class="lede">Render HTML to a PNG image, returned as an inline image, a temporary download URL, or both.</p>
-					<div class="table-wrap">
-						<table>
-							<thead>
-								<tr>
-									<th scope="col">Parameter</th>
-									<th scope="col">Description</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>html</code></td>
-									<td>Required. The HTML to render.</td>
-								</tr>
-								<tr>
-									<td><code>width</code>, <code>height</code></td>
-									<td>Viewport size, default <code>800x800</code>, clamped to 1–4096 px.</td>
-								</tr>
-								<tr>
-									<td><code>omitBackground</code></td>
-									<td>Whether to use a transparent background, default <code>false</code>.</td>
-								</tr>
-								<tr>
-									<td><code>waitForFonts</code></td>
-									<td>Wait for <code>document.fonts.ready</code> plus two repaints before capture, default <code>true</code>.</td>
-								</tr>
-								<tr>
-									<td><code>waitForSelector</code></td>
-									<td>
-										Optional readiness condition: CSS selector, <code>attached | visible | hidden</code> state, with a 30-second time
-										budget.
-									</td>
-								</tr>
-								<tr>
-									<td><code>waitForTimeout</code></td>
-									<td>Extra fixed wait after readiness, 0–10000 ms, default <code>0</code>.</td>
-								</tr>
-								<tr>
-									<td><code>output</code></td>
-									<td><code>inline</code>, <code>url</code>, or <code>both</code>, default <code>both</code>.</td>
-								</tr>
-								<tr>
-									<td><code>filename</code></td>
-									<td>Filename shown on download; <code>.png</code> is appended automatically if missing.</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="section-heading-row tool-heading-row">
+						<div>
+							<p class="section-index">03 / Tool reference</p>
+							<h2 id="tool-title">One tool. The details you need.</h2>
+						</div>
+						<p class="section-lede">Render HTML to a PNG image, returned inline, as a temporary download URL, or both.</p>
 					</div>
-					<p class="note">
-						Timed-out wait conditions return a tool error rather than capturing an unfinished page. To stay under the Workers 128 MB isolate
-						memory limit, inline encoding is capped at 8 MiB.
-					</p>
+
+					<div class="tool-call">
+						<div class="tool-call-main">
+							<span class="callout-label">Call</span>
+							<code><span>render</span>({ html, output: <b>"both"</b> })</code>
+						</div>
+						<span class="tool-call-note">PNG in, inspect next</span>
+					</div>
+
+					<div class="parameter-section">
+						<p class="subsection-label">Parameters</p>
+						<dl class="parameter-list">
+							<div>
+								<dt><code>html</code><span class="required-label">required</span></dt>
+								<dd>The HTML to render.</dd>
+							</div>
+							<div>
+								<dt><code>width</code>, <code>height</code></dt>
+								<dd>Viewport size. Defaults to <code>800 x 800</code>, with each value clamped to 1-4096 px.</dd>
+							</div>
+							<div>
+								<dt><code>omitBackground</code></dt>
+								<dd>Use a transparent background instead of the default opaque background.</dd>
+							</div>
+							<div>
+								<dt><code>waitForFonts</code></dt>
+								<dd>Wait for <code>document.fonts.ready</code> plus two repaints before capture. Defaults to <code>true</code>.</dd>
+							</div>
+							<div>
+								<dt><code>waitForSelector</code></dt>
+								<dd>
+									Optional readiness condition: a CSS selector with <code>attached</code>, <code>visible</code>, or
+									<code>hidden</code> state and a 30-second time budget.
+								</dd>
+							</div>
+							<div>
+								<dt><code>waitForTimeout</code></dt>
+								<dd>Extra fixed wait after readiness, from 0-10000 ms. Defaults to <code>0</code>.</dd>
+							</div>
+							<div>
+								<dt><code>output</code></dt>
+								<dd>Choose <code>inline</code>, <code>url</code>, or <code>both</code>. Defaults to <code>both</code>.</dd>
+							</div>
+							<div>
+								<dt><code>filename</code></dt>
+								<dd>Filename shown on download. A missing <code>.png</code> extension is appended automatically.</dd>
+							</div>
+						</dl>
+						<p class="tool-note">
+							<span class="note-mark" aria-hidden="true">i</span
+							><span
+								>Timed-out wait conditions return a tool error instead of capturing an unfinished page. Inline encoding is capped at 8 MiB
+								to stay under the Workers 128 MB isolate memory limit.</span
+							>
+						</p>
+					</div>
+
+					<div class="output-section">
+						<div class="output-heading">
+							<p class="subsection-label">Output modes</p>
+							<h3>Choose how the screenshot comes back.</h3>
+						</div>
+						<ul class="output-list">
+							<li>
+								<code>inline</code>
+								<p>Returns MCP image content; nothing is written to R2.</p>
+							</li>
+							<li>
+								<code>url</code>
+								<p>Streams the result to R2 and returns only a text presigned URL with resource metadata.</p>
+							</li>
+							<li>
+								<code>both</code>
+								<p>Returns both, degrading automatically to <code>inline</code> or <code>url</code> when needed.</p>
+							</li>
+						</ul>
+						<p class="quiet-note">
+							Every successful result includes <code>output</code>, <code>filename</code>, <code>mimeType</code>, <code>width</code>,
+							<code>height</code>, and <code>byteLength</code>. Temporary URLs are valid for 24 hours.
+						</p>
+					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="closing-action" aria-labelledby="closing-title">
 				<div class="container">
-					<p class="chapter-heading">Output modes</p>
-					<h2>inline, url, or both</h2>
-					<p class="lede">
-						Every successful result carries <code>output</code>, <code>filename</code>, <code>mimeType</code>, <code>width</code>,
-						<code>height</code>, and <code>byteLength</code> structured metadata.
-					</p>
-					<div class="table-wrap">
-						<table>
-							<thead>
-								<tr>
-									<th scope="col">Mode</th>
-									<th scope="col">Behavior</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>inline</code></td>
-									<td>Returns MCP image content; nothing is written to R2.</td>
-								</tr>
-								<tr>
-									<td><code>url</code></td>
-									<td>Streams the render result to R2 and returns only a text presigned URL with resource metadata.</td>
-								</tr>
-								<tr>
-									<td><code>both</code></td>
-									<td>Returns both; on failure it degrades automatically to <code>inline</code> or <code>url</code>.</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="closing-panel">
+						<div class="closing-mark"><img src="assets/repo-logo.svg" alt="" /></div>
+						<div class="closing-copy">
+							<p class="section-index">A better next edit</p>
+							<h2 id="closing-title">Stop guessing. Start iterating.</h2>
+							<p>Connect RenderSight to ChatGPT, send a page, and give the agent something concrete to look at.</p>
+						</div>
+						<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.md"
+							>Open the deployment guide <span aria-hidden="true">-&gt;</span></a
+						>
 					</div>
-					<p class="note">Temporary URLs are R2 S3 presigned URLs valid for 24 hours.</p>
 				</div>
 			</section>
 		</main>
 
 		<footer class="site-footer">
-			<div class="container">
-				<p>RenderSight — MCP screenshot service on Cloudflare Workers.</p>
-				<div class="footer-links">
+			<div class="container footer-inner">
+				<p><strong>RenderSight</strong> / MCP screenshot service on Cloudflare Workers.</p>
+				<nav class="footer-links" aria-label="Footer navigation">
 					<a href="https://github.com/catwithlover/render-sight">GitHub</a>
 					<a href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.md">Deployment guide</a>
 					<a href="zh-Hant/" lang="zh-Hant">繁體中文</a>
-				</div>
+				</nav>
 			</div>
 		</footer>
 	</body>

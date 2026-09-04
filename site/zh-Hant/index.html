@@ -3,15 +3,15 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>RenderSight — 讓 agent 看見自己做出的網頁</title>
+		<title>RenderSight — 讓 agent 清楚看見它做出的網頁</title>
 		<meta
 			name="description"
-			content="RenderSight 是部署在 Cloudflare Workers 上的 MCP 網頁截圖服務，讓 ChatGPT 能夠呈現、檢視並截圖自己製作、編修的網頁成果。"
+			content="RenderSight 是部署在 Cloudflare Workers 上的無狀態 MCP 網頁截圖服務，讓 agent 能渲染、檢視並迭代自己製作的網頁。"
 		/>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="../site.css" />
@@ -19,197 +19,309 @@
 	</head>
 	<body>
 		<header class="site-header">
-			<div class="container">
-				<a class="brand" href="../zh-Hant/">
-					<img src="../assets/repo-logo.svg" alt="RenderSight" />
-					RenderSight
+			<div class="container header-inner">
+				<a class="brand" href="./" aria-label="RenderSight 首頁">
+					<img src="../assets/repo-logo.svg" alt="" />
+					<span>RenderSight</span>
 				</a>
-				<nav>
-					<a class="nav-link" href="https://github.com/catwithlover/render-sight">GitHub</a>
-					<a class="nav-link" href="../" lang="en">English</a>
+				<nav class="site-nav" aria-label="主要導覽">
+					<a class="nav-link" href="#how-it-works">運作方式</a>
+					<a class="nav-link" href="#render-tool"><code>render</code></a>
+					<a class="nav-link nav-link-github" href="https://github.com/catwithlover/render-sight">GitHub</a>
+					<a class="nav-link language-link" href="../" lang="en">English</a>
 				</nav>
 			</div>
 		</header>
 
 		<main>
-			<section class="hero">
-				<div class="container">
-					<p class="hero-kicker">MCP server · Cloudflare Workers</p>
-					<h1>讓 agent <span class="dim">看見</span>自己做出的網頁</h1>
-					<p>
-						RenderSight 是部署在 Cloudflare Workers 上的無狀態 MCP server，讓 ChatGPT 能夠呈現、檢視並截圖 agent
-						在自己執行環境中製作、編修的網頁成果。
-					</p>
-					<div class="cta-row">
-						<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight">查看原始碼</a>
-						<a class="btn btn-secondary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.zh-Hant.md">部署文件</a>
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="container hero-grid">
+					<div class="hero-copy">
+						<p class="eyebrow">
+							<span class="signal-dot" aria-hidden="true"></span>
+							<span>MCP 網頁截圖服務</span>
+							<span class="eyebrow-divider" aria-hidden="true">/</span>
+							<span>Cloudflare Workers</span>
+						</p>
+						<h1 id="hero-title">讓 agent 清楚看見<span>它做出的網頁。</span></h1>
+						<p class="hero-lede">
+							RenderSight 將 agent 產出的 HTML 變成可檢視的截圖，讓它比較、檢查並持續改進。不再修改一個自己看不見的頁面。
+						</p>
+						<div class="cta-row">
+							<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.zh-Hant.md">
+								閱讀部署文件 <span aria-hidden="true">-&gt;</span>
+							</a>
+							<a class="btn btn-secondary" href="https://github.com/catwithlover/render-sight">查看原始碼</a>
+						</div>
+						<div class="hero-facts" aria-label="服務特色">
+							<span class="hero-fact"><strong>HTML 輸入</strong><span>一次 tool call</span></span>
+							<span class="hero-fact"><strong>PNG 輸出</strong><span>內嵌或 URL</span></span>
+							<span class="hero-fact"><strong>24 小時</strong><span>暫存分享</span></span>
+						</div>
+					</div>
+
+					<div class="render-stage" aria-hidden="true">
+						<div class="stage-topline">
+							<span class="stage-label">渲染循環</span>
+							<span class="stage-state"><span class="signal-dot signal-dot-small"></span> 就緒</span>
+						</div>
+						<div class="render-stack">
+							<div class="artifact artifact-code">
+								<div class="artifact-topline">
+									<span>draft.html</span>
+									<span class="artifact-kind">HTML</span>
+								</div>
+								<div class="code-lines">
+									<span class="code-line code-line-short"></span>
+									<span class="code-line code-line-blue"></span>
+									<span class="code-line code-line-wide"></span>
+									<span class="code-line code-line-medium"></span>
+									<span class="code-line code-line-blue code-line-small"></span>
+									<span class="code-line code-line-wide"></span>
+									<span class="code-line code-line-short"></span>
+									<span class="code-line code-line-medium"></span>
+								</div>
+								<span class="artifact-foot">頁面內容</span>
+							</div>
+
+							<div class="render-bridge">
+								<span>render</span>
+								<span class="bridge-line"></span>
+							</div>
+
+							<div class="artifact artifact-screen">
+								<div class="browser-bar">
+									<span class="browser-dots"><i></i><i></i><i></i></span>
+									<span class="browser-address">preview / final</span>
+								</div>
+								<div class="screen-content">
+									<div class="screen-mark"><img src="../assets/repo-logo.svg" alt="" /></div>
+									<span class="screen-eyebrow">渲染結果</span>
+									<h2>看見全貌。</h2>
+									<p>在下一次修改前，先檢查這次結果。</p>
+									<span class="screen-button">檢查這次結果</span>
+								</div>
+								<div class="screen-footline">
+									<span><span class="check-mark">+</span> 字型已就緒</span><span>PNG</span>
+								</div>
+							</div>
+						</div>
+						<div class="stage-footline">
+							<span><span class="signal-dot signal-dot-small"></span> 準備檢視</span>
+							<span>800 x 800 / 128 KB</span>
+						</div>
 					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-why" id="why" aria-labelledby="why-title">
 				<div class="container">
-					<p class="chapter-heading">為什麼需要</p>
-					<h2>agent 看不見自己的成果，只能盲改</h2>
-					<p class="lede">
-						ChatGPT 內建的雲端瀏覽器運行在與 agent 隔離的環境中，agent 產出的 HTML、CSS、JavaScript 無法交給它載入。RenderSight 透過 MCP
-						補上這塊缺口。
-					</p>
-					<ul class="problem-list">
+					<div class="section-heading-row">
+						<div>
+							<p class="section-index">01 / 這個缺口</p>
+							<h2 id="why-title">agent 看不見自己的成果，只能盲改</h2>
+						</div>
+						<p class="section-lede">
+							ChatGPT 內建的雲端瀏覽器運行在與 agent 隔離的環境中。RenderSight 透過 MCP 補上這個缺口，讓視覺回饋成為工作的一部分。
+						</p>
+					</div>
+
+					<ul class="reason-list">
 						<li>
-							<strong>隔離的執行環境</strong>
-							<p>agent 在自己的環境裡產出或修改網頁後，內建瀏覽器無法載入這些成果，因此無法呈現、檢視或截圖。</p>
+							<span class="reason-number">01</span>
+							<div>
+								<h3>補上環境隔離的缺口</h3>
+								<p>agent 在自己的環境中產出的 HTML、CSS 與 JavaScript，終於能被載入、呈現與檢視。</p>
+							</div>
 						</li>
 						<li>
-							<strong>雲端渲染截圖</strong>
-							<p>agent 將網頁內容交給 <code>render</code> tool，由 Cloudflare Browser Run 在雲端渲染並回傳 PNG 截圖。</p>
+							<span class="reason-number">02</span>
+							<div>
+								<h3>在頁面所在的地方渲染</h3>
+								<p>Cloudflare Browser Run 在雲端渲染內容，等待 webfont 就緒後再擷取 PNG。</p>
+							</div>
 						</li>
 						<li>
-							<strong>看見並迭代</strong>
-							<p>以「截圖 → 檢視 → 修正 → 再截圖」的循環迭代 UI，視覺化檢查 landing page、電子郵件樣板或報告版面。</p>
+							<span class="reason-number">03</span>
+							<div>
+								<h3>讓迭代循環保持流暢</h3>
+								<p>截圖、檢視、修正，再次截圖。替 landing page、電子郵件樣板與報告版面做視覺品質檢查。</p>
+							</div>
 						</li>
 						<li>
-							<strong>暫存分享</strong>
-							<p>渲染結果可存入 R2，包裝成 24 小時效期的暫存下載連結分享出去。</p>
+							<span class="reason-number">04</span>
+							<div>
+								<h3>分享成果，但不必永久保存</h3>
+								<p>將結果存入 R2，傳送一個有效 24 小時的暫存下載連結。</p>
+							</div>
 						</li>
 					</ul>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-blueprint" id="how-it-works" aria-labelledby="flow-title">
 				<div class="container">
-					<p class="chapter-heading">運作方式</p>
-					<h2>從 HTML 到截圖，一個 tool 完成</h2>
-					<p class="lede">
-						Worker 由 Cloudflare Access Managed OAuth 保護，只有通過 Access Policy 的使用者能連線。截圖能以 MCP image content 內嵌回傳、存入
-						R2 並回傳暫存下載 URL，或兩者同時回傳。
-					</p>
-					<div class="flow">
-						<div class="flow-step flow-main">
-							<span class="step-no">1</span>
-							<h3>MCP server（Cloudflare Workers）</h3>
-							<p>ChatGPT 透過 Managed OAuth 連線，呼叫 <code>render</code> tool 並傳入 HTML。</p>
+					<div class="section-heading-row">
+						<div>
+							<p class="section-index">02 / 運作方式</p>
+							<h2 id="flow-title">一個 agent 真正用得上的渲染循環。</h2>
 						</div>
-						<div class="flow-step">
-							<span class="step-no">2</span>
-							<h3>Browser Run</h3>
-							<p>雲端渲染 HTML，等內容與 webfont 就緒後截圖，回傳 PNG。</p>
-						</div>
-						<div class="flow-step">
-							<span class="step-no">3</span>
-							<h3>R2 暫存</h3>
-							<p>PNG 存入 R2，回傳 24 小時效期的 presigned 下載 URL。</p>
-						</div>
-						<div class="flow-step">
-							<span class="step-no">4</span>
-							<h3>agent 檢視成果</h3>
-							<p>agent 以 image content 或下載 URL 讀取截圖，據以迭代修正。</p>
-						</div>
+						<p class="section-lede">
+							Worker 由 Cloudflare Access Managed OAuth 保護。成功呼叫後，可回傳 image content、暫存 URL，或兩者同時回傳。
+						</p>
+					</div>
+
+					<ol class="flow-list">
+						<li class="flow-step flow-step-start">
+							<span class="flow-number">01</span>
+							<h3>送出草稿</h3>
+							<p>ChatGPT 透過 Managed OAuth 連接 MCP server，並將 HTML 傳給 <code>render</code>。</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">02</span>
+							<h3>執行瀏覽器</h3>
+							<p>Browser Run 在雲端渲染頁面，等待內容與 webfont 後擷取 PNG。</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">03</span>
+							<h3>暫存結果</h3>
+							<p>需要 URL 時，R2 會儲存 PNG，並回傳有效 24 小時的 presigned 下載連結。</p>
+						</li>
+						<li class="flow-step">
+							<span class="flow-number">04</span>
+							<h3>檢視並迭代</h3>
+							<p>agent 讀取圖片內容或 URL，將看見的結果轉成下一個有用的修改。</p>
+						</li>
+					</ol>
+
+					<div class="flow-callout">
+						<span class="callout-label">常見呼叫方式</span>
+						<code><span>render</span>({ html, output: <b>"both"</b> })</code>
+						<span class="callout-result">截圖 + metadata</span>
 					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="section section-tool" id="render-tool" aria-labelledby="tool-title">
 				<div class="container">
-					<p class="chapter-heading">Tools</p>
-					<h2>render</h2>
-					<p class="lede">將 HTML 渲染為 PNG 圖片，並以內嵌圖片、暫存下載 URL 或兩者回傳。</p>
-					<div class="table-wrap">
-						<table>
-							<thead>
-								<tr>
-									<th scope="col">參數</th>
-									<th scope="col">說明</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>html</code></td>
-									<td>必填，要渲染的 HTML。</td>
-								</tr>
-								<tr>
-									<td><code>width</code>、<code>height</code></td>
-									<td>viewport 尺寸，預設 <code>800x800</code>，限制 1–4096 px。</td>
-								</tr>
-								<tr>
-									<td><code>omitBackground</code></td>
-									<td>是否使用透明背景，預設 <code>false</code>。</td>
-								</tr>
-								<tr>
-									<td><code>waitForFonts</code></td>
-									<td>截圖前等待 <code>document.fonts.ready</code> 與兩次 repaint，預設 <code>true</code>。</td>
-								</tr>
-								<tr>
-									<td><code>waitForSelector</code></td>
-									<td>可選 readiness 條件：CSS selector、<code>attached | visible | hidden</code> state，最長 30 秒時間預算。</td>
-								</tr>
-								<tr>
-									<td><code>waitForTimeout</code></td>
-									<td>readiness 後的額外固定等待，0–10000 ms，預設 <code>0</code>。</td>
-								</tr>
-								<tr>
-									<td><code>output</code></td>
-									<td><code>inline</code>、<code>url</code> 或 <code>both</code>，預設 <code>both</code>。</td>
-								</tr>
-								<tr>
-									<td><code>filename</code></td>
-									<td>下載時顯示的檔名；未提供 <code>.png</code> 時自動補上。</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="section-heading-row tool-heading-row">
+						<div>
+							<p class="section-index">03 / Tool reference</p>
+							<h2 id="tool-title">一個 tool，剛好需要的細節。</h2>
+						</div>
+						<p class="section-lede">將 HTML 渲染為 PNG 圖片，以內嵌圖片、暫存下載 URL 或兩者回傳。</p>
 					</div>
-					<p class="note">
-						等待條件逾時時會回傳 tool error，不會以未完成的畫面繼續。為避免超過 Workers 的 128 MB isolate memory limit，inline 編碼上限為 8
-						MiB。
-					</p>
+
+					<div class="tool-call">
+						<div class="tool-call-main">
+							<span class="callout-label">呼叫</span>
+							<code><span>render</span>({ html, output: <b>"both"</b> })</code>
+						</div>
+						<span class="tool-call-note">輸入 PNG，接著檢視</span>
+					</div>
+
+					<div class="parameter-section">
+						<p class="subsection-label">Parameters</p>
+						<dl class="parameter-list">
+							<div>
+								<dt><code>html</code><span class="required-label">必填</span></dt>
+								<dd>要渲染的 HTML。</dd>
+							</div>
+							<div>
+								<dt><code>width</code>、<code>height</code></dt>
+								<dd>viewport 尺寸。預設為 <code>800 x 800</code>，每個值限制在 1-4096 px。</dd>
+							</div>
+							<div>
+								<dt><code>omitBackground</code></dt>
+								<dd>使用透明背景，而不是預設的不透明背景。</dd>
+							</div>
+							<div>
+								<dt><code>waitForFonts</code></dt>
+								<dd>截圖前等待 <code>document.fonts.ready</code> 與兩次 repaint，預設為 <code>true</code>。</dd>
+							</div>
+							<div>
+								<dt><code>waitForSelector</code></dt>
+								<dd>
+									可選的 readiness 條件：CSS selector 搭配 <code>attached</code>、<code>visible</code> 或 <code>hidden</code> 狀態，時間上限
+									30 秒。
+								</dd>
+							</div>
+							<div>
+								<dt><code>waitForTimeout</code></dt>
+								<dd>readiness 後的額外固定等待，範圍為 0-10000 ms，預設為 <code>0</code>。</dd>
+							</div>
+							<div>
+								<dt><code>output</code></dt>
+								<dd>選擇 <code>inline</code>、<code>url</code> 或 <code>both</code>，預設為 <code>both</code>。</dd>
+							</div>
+							<div>
+								<dt><code>filename</code></dt>
+								<dd>下載時顯示的檔名；沒有 <code>.png</code> 副檔名時會自動補上。</dd>
+							</div>
+						</dl>
+						<p class="tool-note">
+							<span class="note-mark" aria-hidden="true">i</span
+							><span
+								>等待條件逾時會回傳 tool error，不會擷取未完成的頁面。為避免超過 Workers 的 128 MB isolate memory limit，inline 編碼上限為 8
+								MiB。</span
+							>
+						</p>
+					</div>
+
+					<div class="output-section">
+						<div class="output-heading">
+							<p class="subsection-label">Output modes</p>
+							<h3>選擇截圖回傳的方式。</h3>
+						</div>
+						<ul class="output-list">
+							<li>
+								<code>inline</code>
+								<p>回傳 MCP image content，不會寫入 R2。</p>
+							</li>
+							<li>
+								<code>url</code>
+								<p>將結果串流至 R2，只回傳文字 presigned URL 與 resource metadata。</p>
+							</li>
+							<li>
+								<code>both</code>
+								<p>同時回傳兩者；必要時會自動降級為 <code>inline</code> 或 <code>url</code>。</p>
+							</li>
+						</ul>
+						<p class="quiet-note">
+							每個成功結果都會包含 <code>output</code>、<code>filename</code>、<code>mimeType</code>、<code>width</code>、<code
+								>height</code
+							>
+							與 <code>byteLength</code>。暫存 URL 有效 24 小時。
+						</p>
+					</div>
 				</div>
 			</section>
 
-			<section class="chapter">
+			<section class="closing-action" aria-labelledby="closing-title">
 				<div class="container">
-					<p class="chapter-heading">輸出模式</p>
-					<h2>inline、url 或 both</h2>
-					<p class="lede">
-						所有成功結果都會附帶 <code>output</code>、<code>filename</code>、<code>mimeType</code>、<code>width</code>、<code>height</code>
-						與 <code>byteLength</code> structured metadata。
-					</p>
-					<div class="table-wrap">
-						<table>
-							<thead>
-								<tr>
-									<th scope="col">模式</th>
-									<th scope="col">行為</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>inline</code></td>
-									<td>回傳 MCP image content，不寫入 R2。</td>
-								</tr>
-								<tr>
-									<td><code>url</code></td>
-									<td>將渲染結果串流至 R2，只回傳文字 presigned URL 與 resource metadata。</td>
-								</tr>
-								<tr>
-									<td><code>both</code></td>
-									<td>同時回傳兩者；失敗時自動降級為 <code>inline</code> 或 <code>url</code>。</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="closing-panel">
+						<div class="closing-mark"><img src="../assets/repo-logo.svg" alt="" /></div>
+						<div class="closing-copy">
+							<p class="section-index">下一個更好的修改</p>
+							<h2 id="closing-title">別再猜。開始迭代。</h2>
+							<p>將 RenderSight 連接到 ChatGPT，送出一個頁面，給 agent 一個可以具體檢視的結果。</p>
+						</div>
+						<a class="btn btn-primary" href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.zh-Hant.md"
+							>開啟部署文件 <span aria-hidden="true">-&gt;</span></a
+						>
 					</div>
-					<p class="note">暫存 URL 是有效 24 小時的 R2 S3 presigned URL</p>
 				</div>
 			</section>
 		</main>
 
 		<footer class="site-footer">
-			<div class="container">
-				<p>RenderSight — MCP 網頁截圖服務，部署於 Cloudflare Workers。</p>
-				<div class="footer-links">
+			<div class="container footer-inner">
+				<p><strong>RenderSight</strong> / 部署於 Cloudflare Workers 的 MCP 網頁截圖服務。</p>
+				<nav class="footer-links" aria-label="頁尾導覽">
 					<a href="https://github.com/catwithlover/render-sight">GitHub</a>
 					<a href="https://github.com/catwithlover/render-sight/blob/main/docs/deployment.zh-Hant.md">部署文件</a>
 					<a href="../" lang="en">English</a>
-				</div>
+				</nav>
 			</div>
 		</footer>
 	</body>
