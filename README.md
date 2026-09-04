@@ -37,16 +37,16 @@ Renders HTML to a PNG image, returned as an inline image, a temporary download U
 
 Parameters:
 
-| Parameter         | Description                                                                                                                    |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `html`            | Required. The HTML to render.                                                                                                  |
-| `width`, `height` | Viewport size, default `800x800`, each clamped to `1`–`4096` pixels.                                                           |
-| `omitBackground`  | Whether to use a transparent background, default `false`.                                                                      |
-| `waitForFonts`    | Waits for `document.fonts.ready` and two repaints before capture, default `true`.                                              |
+| Parameter         | Description                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `html`            | Required. The HTML to render.                                                                                                    |
+| `width`, `height` | Viewport size, default `800x800`, each clamped to `1`–`4096` pixels.                                                             |
+| `omitBackground`  | Whether to use a transparent background, default `false`.                                                                        |
+| `waitForFonts`    | Waits for `document.fonts.ready` and two repaints before capture, default `true`.                                                |
 | `waitForSelector` | Optional readiness condition: a CSS `selector`, an `attached \| visible \| hidden` state, and a 30-second readiness time budget. |
-| `waitForTimeout`  | Extra fixed wait after readiness completes, `0`–`10000` ms, default `0`.                                                       |
-| `output`          | `inline`, `url`, or `both`, default `both`.                                                                                    |
-| `filename`        | Filename shown on download; `.png` is appended automatically if missing.                                                       |
+| `waitForTimeout`  | Extra fixed wait after readiness completes, `0`–`10000` ms, default `0`.                                                         |
+| `output`          | `inline`, `url`, or `both`, default `both`.                                                                                      |
+| `filename`        | Filename shown on download; `.png` is appended automatically if missing.                                                         |
 
 The service injects an internal readiness marker script into the supplied HTML — right after the doctype, before the rest of the document markup and any CSP meta. It then waits, in order, for the specified selector, webfonts, an extra delay, and two animation frames before capturing. When a wait condition times out, a tool error is returned instead of continuing with an unfinished page. Example with a loading overlay:
 
@@ -65,10 +65,10 @@ Waiting only removes loading races. If a font URL fails due to CORS, permission,
 
 Output modes:
 
-| Mode     | Behavior                                                                                                                                                       |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `inline` | Returns MCP image content; nothing is written to R2.                                                                                                           |
-| `url`    | Streams the Browser Run response body straight to R2 and returns only a text presigned URL and resource metadata.                                              |
+| Mode     | Behavior                                                                                                                                                                                                                          |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inline` | Returns MCP image content; nothing is written to R2.                                                                                                                                                                              |
+| `url`    | Streams the Browser Run response body straight to R2 and returns only a text presigned URL and resource metadata.                                                                                                                 |
 | `both`   | Returns both MCP image content and a temporary presigned URL. When under the inline cap, R2 write or signing failures degrade to `inline`; when the image exceeds the inline cap and the R2 write succeeds, it degrades to `url`. |
 
 Every successful result carries `output`, `filename`, `mimeType`, `width`, `height`, and `byteLength` structured metadata. Stored results additionally include `renderId`, `downloadUrl`, and `expiresAt`.
